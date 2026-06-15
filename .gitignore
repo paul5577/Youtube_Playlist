@@ -27,3 +27,4 @@ dist-ssr
 scripts/playlist-publish/config/credentials.json
 scripts/playlist-publish/config/token.json
 scripts/playlist-publish/config/playlists.json
+scripts/playlist-publish/config/openai.json

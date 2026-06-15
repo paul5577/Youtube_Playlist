@@ -25,6 +25,14 @@
 
       "audioFolder": "/abs/path/to/PlaylistA/audio",
 
+      "imageGeneration": {
+        "enabled": false,
+        "_comment": "If enabled and a row has no backgroundImage, an image is generated via the OpenAI image API and used for both the thumbnail and the video background. Requires OPENAI_API_KEY env var or config/openai.json.",
+        "model": "gpt-image-1",
+        "size": "1792x1024",
+        "promptTemplate": "A cinematic, atmospheric background illustration for a video titled '{title}'. {description}. No text, no logos, 16:9."
+      },
+
       "thumbnail": {
         "templateImage": "/abs/path/to/PlaylistA/thumb_template.jpg",
         "fontFile": "/usr/share/fonts/truetype/nanum/NanumGothicExtraBold.ttf",

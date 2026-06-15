@@ -4,9 +4,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { getAuthClient } from './lib/auth.js';
 import { readRows, updateRow } from './lib/sheets.js';
-import { generateThumbnail } from './lib/thumbnail.js';
+import { generateThumbnail, slugify } from './lib/thumbnail.js';
 import { buildVideo } from './lib/video.js';
 import { uploadVideo } from './lib/youtube.js';
+import { generateBackgroundImage } from './lib/imageGen.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -57,11 +58,16 @@ function isReady(status) {
 async function processRow(auth, playlistConfig, row, { upload }) {
   console.log(`\n=== Row ${row._row}: "${row.title}" ===`);
 
-  const backgroundImage = (row.backgroundImage && row.backgroundImage.trim())
-    || playlistConfig.thumbnail.templateImage;
+  let backgroundImage = row.backgroundImage && row.backgroundImage.trim();
+  if (!backgroundImage && playlistConfig.imageGeneration?.enabled) {
+    console.log('Generating background image with OpenAI...');
+    backgroundImage = await generateBackgroundImage(playlistConfig, row, slugify(row.title || `row-${row._row}`));
+    console.log(`  -> ${backgroundImage}`);
+  }
+  backgroundImage = backgroundImage || playlistConfig.thumbnail.templateImage;
 
   console.log('Generating thumbnail...');
-  const thumbnailPath = await generateThumbnail(playlistConfig, row);
+  const thumbnailPath = await generateThumbnail(playlistConfig, row, backgroundImage);
   console.log(`  -> ${thumbnailPath}`);
 
   console.log('Building video (intro + content + outro)...');

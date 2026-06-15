@@ -4,16 +4,12 @@ import { run } from './ffmpeg.js';
 
 /**
  * Generates a thumbnail image by overlaying title text onto a background
- * template image using ffmpeg's drawtext filter.
+ * image using ffmpeg's drawtext filter.
  *
  * Returns the absolute path to the generated thumbnail (JPEG).
  */
-export async function generateThumbnail(playlistConfig, row) {
+export async function generateThumbnail(playlistConfig, row, background) {
   const { thumbnail, output } = playlistConfig;
-
-  const background = row.backgroundImage && row.backgroundImage.trim()
-    ? row.backgroundImage.trim()
-    : thumbnail.templateImage;
 
   if (!fs.existsSync(background)) {
     throw new Error(`Thumbnail background image not found: ${background}`);

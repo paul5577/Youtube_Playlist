@@ -1,0 +1,4 @@
+{
+  "_comment": "Copy to openai.json (gitignored) if you don't want to use the OPENAI_API_KEY env var instead.",
+  "apiKey": "sk-..."
+}

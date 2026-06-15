@@ -8,7 +8,10 @@ description: Automate YouTube content production for one or more playlists - rea
 Automates the repetitive production pipeline for channels that run **multiple playlists**:
 
 1. Read a row (or all "ready" rows) from a Google Sheet schedule for a given playlist.
-2. Generate a thumbnail image (background template + title text overlay via ffmpeg `drawtext`).
+2. Generate a background image - either a fixed template, a per-row image from the sheet, or
+   (if `imageGeneration.enabled`) an AI-generated image via the OpenAI image API based on the
+   row's title/description - then overlay the title text via ffmpeg `drawtext` to produce the
+   thumbnail.
 3. Pick/match an audio file from the playlist's audio folder.
 4. Build the video: `intro.mp4` + (background image synced to audio length) + `outro.mp4`.
 5. Upload the result to YouTube as **private**, attach the generated thumbnail, and add it to the configured YouTube playlist.
@@ -32,6 +35,9 @@ only the config entry changes between channels/playlists.
    `scripts/playlist-publish/config/playlists.json` and fill in one entry per playlist
    (Google Sheet ID, audio folder, intro/outro paths, output folder, YouTube playlist ID, etc).
    See that file for field documentation.
+6. (Optional) For AI-generated thumbnail/background images, set `imageGeneration.enabled: true`
+   per playlist and provide an OpenAI API key via the `OPENAI_API_KEY` env var or
+   `scripts/playlist-publish/config/openai.json` (copy from `openai.example.json`).
 
 ## Running the pipeline
 
