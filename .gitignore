@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Playlist publish skill - secrets and per-user config
+scripts/playlist-publish/config/credentials.json
+scripts/playlist-publish/config/token.json
+scripts/playlist-publish/config/playlists.json

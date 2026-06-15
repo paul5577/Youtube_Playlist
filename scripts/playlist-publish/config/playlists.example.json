@@ -1,0 +1,61 @@
+{
+  "_comment": "Copy this file to playlists.json and fill in real values. One entry per playlist.",
+  "playlists": {
+    "PlaylistA": {
+      "description": "Example: Lo-fi study music playlist",
+
+      "spreadsheet": {
+        "id": "GOOGLE_SHEET_ID_HERE",
+        "sheetName": "Schedule",
+        "headerRow": 1,
+        "_comment": "Column letters in the sheet tab. Status values used: empty/'ready' -> processed by the pipeline, 'uploaded' -> skipped.",
+        "columns": {
+          "title": "A",
+          "description": "B",
+          "tags": "C",
+          "thumbnailText": "D",
+          "backgroundImage": "E",
+          "audioFile": "F",
+          "scheduledDate": "G",
+          "status": "H",
+          "videoId": "I",
+          "videoUrl": "J"
+        }
+      },
+
+      "audioFolder": "/abs/path/to/PlaylistA/audio",
+
+      "thumbnail": {
+        "templateImage": "/abs/path/to/PlaylistA/thumb_template.jpg",
+        "fontFile": "/usr/share/fonts/truetype/nanum/NanumGothicExtraBold.ttf",
+        "fontSize": 72,
+        "fontColor": "white",
+        "x": "(w-text_w)/2",
+        "y": "h-220",
+        "_comment": "x/y are raw ffmpeg drawtext expressions"
+      },
+
+      "video": {
+        "introPath": "/abs/path/to/PlaylistA/intro.mp4",
+        "outroPath": "/abs/path/to/PlaylistA/outro.mp4",
+        "resolution": "1920x1080",
+        "fps": 30,
+        "kenBurns": true,
+        "_comment": "kenBurns: slow zoom on the background image for the main segment"
+      },
+
+      "output": {
+        "thumbnailsDir": "/abs/path/to/output/PlaylistA/thumbnails",
+        "videosDir": "/abs/path/to/output/PlaylistA/videos",
+        "tempDir": "/abs/path/to/output/PlaylistA/tmp"
+      },
+
+      "youtube": {
+        "playlistId": "PLxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "categoryId": "10",
+        "privacyStatus": "private",
+        "defaultLanguage": "ko"
+      }
+    }
+  }
+}
