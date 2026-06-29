@@ -1,15 +1,8 @@
 #!/usr/bin/env node
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { getAuthClient } from './lib/auth.js';
 import { readRows, updateRow } from './lib/sheets.js';
-import { generateThumbnail, slugify } from './lib/thumbnail.js';
-import { buildVideo } from './lib/video.js';
-import { uploadVideo } from './lib/youtube.js';
-import { generateBackgroundImage } from './lib/imageGen.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import { loadPlaylistConfig } from './lib/config.js';
+import { runFullPipeline } from './lib/pipeline.js';
 
 function parseArgs(argv) {
   const args = { upload: true };
@@ -34,22 +27,6 @@ function parseArgs(argv) {
   return args;
 }
 
-function loadPlaylistConfig(name) {
-  const configPath = path.join(__dirname, 'config', 'playlists.json');
-  if (!fs.existsSync(configPath)) {
-    throw new Error(
-      `Config not found at ${configPath}. Copy playlists.example.json to playlists.json and fill it in.`
-    );
-  }
-  const all = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-  const cfg = all.playlists?.[name];
-  if (!cfg) {
-    const available = Object.keys(all.playlists || {}).join(', ') || '(none)';
-    throw new Error(`Playlist "${name}" not found in config. Available: ${available}`);
-  }
-  return cfg;
-}
-
 function isReady(status) {
   const s = (status || '').trim().toLowerCase();
   return s === '' || s === 'ready';
@@ -57,39 +34,16 @@ function isReady(status) {
 
 async function processRow(auth, playlistConfig, row, { upload }) {
   console.log(`\n=== Row ${row._row}: "${row.title}" ===`);
+  const log = (msg) => console.log(`  ${msg}`);
 
-  let backgroundImage = row.backgroundImage && row.backgroundImage.trim();
-  if (!backgroundImage && playlistConfig.imageGeneration?.enabled) {
-    console.log('Generating background image with OpenAI...');
-    backgroundImage = await generateBackgroundImage(playlistConfig, row, slugify(row.title || `row-${row._row}`));
-    console.log(`  -> ${backgroundImage}`);
+  if (upload) {
+    await runFullPipeline(auth, playlistConfig, row, log);
+  } else {
+    const { runThumbnailStep, runVideoStep } = await import('./lib/pipeline.js');
+    const { backgroundImage } = await runThumbnailStep(playlistConfig, row, log);
+    await runVideoStep(playlistConfig, row, backgroundImage, log);
+    log('Skipping YouTube upload (--no-upload).');
   }
-  backgroundImage = backgroundImage || playlistConfig.thumbnail.templateImage;
-
-  console.log('Generating thumbnail...');
-  const thumbnailPath = await generateThumbnail(playlistConfig, row, backgroundImage);
-  console.log(`  -> ${thumbnailPath}`);
-
-  console.log('Building video (intro + content + outro)...');
-  const { videoPath, audioPath } = await buildVideo(playlistConfig, row, backgroundImage);
-  console.log(`  -> ${videoPath}`);
-  console.log(`  audio: ${audioPath}`);
-
-  if (!upload) {
-    console.log('Skipping YouTube upload (--no-upload).');
-    return;
-  }
-
-  console.log('Uploading to YouTube as private...');
-  const { videoId, videoUrl } = await uploadVideo(auth, playlistConfig, row, videoPath, thumbnailPath);
-  console.log(`  -> ${videoUrl}`);
-
-  await updateRow(auth, playlistConfig.spreadsheet, row._row, {
-    status: 'uploaded',
-    videoId,
-    videoUrl,
-  });
-  console.log('  sheet updated.');
 }
 
 async function main() {

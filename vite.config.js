@@ -5,4 +5,10 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: '/Youtube_Playlist/',
+  server: {
+    host: true,
+    proxy: {
+      '/api': 'http://localhost:8787',
+    },
+  },
 })

@@ -6,10 +6,12 @@ import ContentStrategy from './components/ContentStrategy';
 import ChannelSetup from './components/ChannelSetup';
 import ContentCalendar from './components/ContentCalendar';
 import ToolsReport from './components/ToolsReport';
+import PlaylistPublish from './components/PlaylistPublish';
 
 const PAGES = {
   dashboard: Dashboard,
   explorer: PlaylistExplorer,
+  publish: PlaylistPublish,
   strategy: ContentStrategy,
   channel: ChannelSetup,
   calendar: ContentCalendar,

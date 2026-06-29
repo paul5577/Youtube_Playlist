@@ -1,8 +1,9 @@
-import { BarChart2, Search, Settings, Calendar, Wrench, TrendingUp, PlayCircle } from 'lucide-react';
+import { BarChart2, Search, Settings, Calendar, Wrench, TrendingUp, PlayCircle, Rocket } from 'lucide-react';
 
 const NAV = [
   { id: 'dashboard', icon: BarChart2, label: '대시보드' },
   { id: 'explorer', icon: Search, label: '플레이리스트 탐색' },
+  { id: 'publish', icon: Rocket, label: '퍼블리시' },
   { id: 'strategy', icon: TrendingUp, label: '콘텐츠 전략' },
   { id: 'channel', icon: Settings, label: '채널 설정' },
   { id: 'calendar', icon: Calendar, label: '콘텐츠 캘린더' },

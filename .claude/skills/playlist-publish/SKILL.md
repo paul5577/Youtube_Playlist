@@ -52,6 +52,19 @@ node scripts/playlist-publish/run.js --playlist PlaylistA --row 5
 node scripts/playlist-publish/run.js --playlist PlaylistA --row 5 --no-upload
 ```
 
+## Web app
+
+A browser UI (mobile-friendly) is available instead of the CLI:
+
+```
+npm run server   # starts the API server on http://localhost:8787 (needs ffmpeg + config from above)
+npm run dev      # starts the Vite dev server on http://localhost:5173, proxies /api to the server
+```
+
+Open the dev server URL (or `http://<your-lan-ip>:5173` from a phone on the same network) and go to
+the **퍼블리시** tab. It lets you pick a playlist, see the sheet rows, and run 썸네일 생성 / 영상 생성 /
+업로드 / 전체 실행 per row with live progress, without touching the terminal.
+
 ## How Claude should use this skill
 
 - If the user names a playlist, look it up in `scripts/playlist-playlist/config/playlists.json`
